@@ -6,7 +6,9 @@ A Markdown fieldtype for Expression Engine with a few handy options
 Installation
 ------------
 
-Standard EE Fieldtype install
+* Create folder dm_flexidown in /system/expressionengine/third_party
+* Include all files in this repo
+* Add any callbacks required to library/flexi_format.php
 
 Template usage
 --------------
