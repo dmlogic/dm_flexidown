@@ -58,6 +58,21 @@ class Dm_flexidown_ft extends EE_Fieldtype {
 		
 		return $out;
 	}
+	
+	// ------------------------------------------------------------------------
+	
+	/**
+	 * display_cell
+	 * 
+	 * Matrix cell display
+	 * 
+	 * @param string $data
+	 * @return string 
+	 */
+	public function display_cell($data) {
+		
+		return $this->display_field($data);
+	}
 
 	// --------------------------------------------------------------------
 
@@ -100,7 +115,7 @@ class Dm_flexidown_ft extends EE_Fieldtype {
 		
 		// process the Markdown
 		// @todo: Would be nice to have this pre-rendered to save time
-		require(PATH_THIRD . '/dm_flexidown/library/markdown.php');
+		require_once PATH_THIRD . '/dm_flexidown/library/markdown.php';
 		$data = Markdown($data);
 		
 		// apply any callback
@@ -207,22 +222,50 @@ class Dm_flexidown_ft extends EE_Fieldtype {
 	 * 
 	 * @param array $data 
 	 */
-	public function display_settings($data) {
+	public function display_settings($data, $matrix = FALSE ) {
 		
 		$field_rows	= (!empty($data['fxd_form_control_rows'])) ? $data['fxd_form_control_rows'] : $this->default_height;
 		$field_formatting = (!empty($data['fxd_default_formatting'])) ? $data['fxd_default_formatting'] : '';
+		
+		$lrows = lang('textarea_rows', 'fxd_form_control_rows');
+		$frows = form_input(array('id'=>'fxd_form_control_rows','name'=>'fxd_form_control_rows', 'size'=>4,'value'=>$field_rows));
+		
+		$lformat = lang('deft_field_formatting', 'fxd_default_formatting');
+		$fformat = form_dropdown('fxd_default_formatting', $this->formatting_types, $field_formatting, 'id="fxd_default_formatting"');
+		
+		if($matrix) {
+			return array(
+				array($lrows,$frows),
+				array($lformat,$fformat),
+			);
+		}
 
 		// how many rows
 		$this->EE->table->add_row(
-			lang('textarea_rows', 'fxd_form_control_rows'),
-			form_input(array('id'=>'fxd_form_control_rows','name'=>'fxd_form_control_rows', 'size'=>4,'value'=>$field_rows))
+			$lrows,
+			$frows
 		);
 		
 		// default formatting
 		$this->EE->table->add_row(
-			lang('deft_field_formatting', 'fxd_default_formatting'),
-			form_dropdown('fxd_default_formatting', $this->formatting_types, $field_formatting, 'id="fxd_default_formatting"')
+			$lformat,
+			$fformat
 		);
+	}
+	
+	// ------------------------------------------------------------------------
+	
+	/**
+	 * display_cell_settings
+	 * 
+	 * Settings for Matrix
+	 * 
+	 * @param array $data
+	 * @return array 
+	 */
+	public function display_cell_settings($data) {
+
+		return $this->display_settings($data,true);
 	}
 	
 	// ------------------------------------------------------------------------
